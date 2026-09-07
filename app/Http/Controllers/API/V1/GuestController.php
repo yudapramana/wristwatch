@@ -20,7 +20,7 @@ class GuestController extends Controller
         // Jika snapshot belum ada, buat secara otomatis dari data master event
         if (!$snapshot) {
             // Sesuaikan dengan event_key yang di-insert di database ('MTQXLIPSL')
-            $event = Event::where('event_key', 'MTQXLIPSL')->first();
+            $event = Event::where('event_key', 'MTQXLIIPSL')->first();
 
             if (!$event) {
                 return response()->json(['message' => 'Data event utama tidak ditemukan.'], 404);
