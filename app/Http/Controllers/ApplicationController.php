@@ -9,11 +9,9 @@ class ApplicationController extends Controller
     
     public function __invoke(Request $request)
     {
-        $role = '';
-        $role = $request->user()->role;
         return view('layouts.app',
             [
-                'role' => $role
+                'role' => 'role'
             ]);
     }
 
