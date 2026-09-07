@@ -1,0 +1,152 @@
+import axios from 'axios'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+import { useStorage } from '@vueuse/core'
+import { useAuthUserStore } from './AuthUserStore'
+
+export const useMasterDataStore = defineStore('MasterDataStore', () => {
+
+  const authUserStore = useAuthUserStore()
+
+  /* =========================
+   * STATE (PERSISTED)
+   * ========================= */
+  const eventStages     = useStorage('md:eventStages', [])
+  const eventBranches   = useStorage('md:eventBranches', [])
+  const eventGroups     = useStorage('md:eventGroups', [])
+  const eventCategories = useStorage('md:eventCategories', [])
+  const eventRegions    = useStorage('md:eventRegions', [])
+
+  const loading = ref(false)
+
+  /* =========================
+   * INTERNAL HELPER
+   * ========================= */
+  const fetchMaster = async (type, params = {}, force = false) => {
+    if (!authUserStore.eventData?.id) return []
+
+    // 🔎 Tentukan storage target
+    const storageMap = {
+      event_stages: eventStages,
+      event_branches: eventBranches,
+      event_groups: eventGroups,
+      event_categories: eventCategories,
+      event_regions: eventRegions,
+    }
+
+    const target = storageMap[type]
+
+    // ✅ Jika TANPA filter, TIDAK force, & data sudah ada → pakai cache
+    const hasFilter = Object.keys(params).length > 0
+    if (!force && !hasFilter && target?.value?.length) {
+      return target.value
+    }
+
+    loading.value = true
+    try {
+      const { data } = await axios.get('/api/v1/master', {
+        params: {
+          type,
+          event_id: authUserStore.eventData.id,
+          ...params,
+        },
+      })
+
+      return data.data || []
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /* =========================
+   * ACTIONS
+   * ========================= */
+
+  /* ---------- STAGES ---------- */
+  const loadEventStages = async (force = false) => {
+    eventStages.value = await fetchMaster('event_stages', {}, force)
+  }
+
+  /* ---------- BRANCHES ---------- */
+  const loadEventBranches = async () => {
+    eventBranches.value = await fetchMaster('event_branches')
+  }
+
+  /* ---------- GROUPS ---------- */
+
+  const loadAllEventGroups = async () => {
+    eventGroups.value = await fetchMaster('event_groups')
+  }
+
+  const loadEventGroups = async (eventBranchId = null) => {
+    eventGroups.value = await fetchMaster(
+      'event_groups',
+      eventBranchId ? { event_branch_id: eventBranchId } : {}
+    )
+  }
+
+  /* ---------- CATEGORIES ---------- */
+
+  const loadAllEventCategories = async () => {
+    eventCategories.value = await fetchMaster('event_categories')
+  }
+
+  const loadEventCategories = async (eventGroupId = null) => {
+    eventCategories.value = await fetchMaster(
+      'event_categories',
+      eventGroupId ? { event_group_id: eventGroupId } : {}
+    )
+  }
+
+  /* ---------- REGIONS ---------- */
+  const loadEventRegions = async (force = false) => {
+    eventRegions.value = await fetchMaster('event_regions', {}, force)
+  }
+
+  /* ---------- PRELOAD ---------- */
+  const preloadMasterMTQ = async () => {
+    if (!authUserStore.eventData?.id) return
+
+    await Promise.all([
+      loadEventStages(),
+      loadEventBranches(),
+      loadAllEventGroups(),
+      loadAllEventCategories(),
+      loadEventRegions(),
+    ])
+  }
+
+  /* ---------- RESET ---------- */
+  const clearMaster = () => {
+    eventStages.value     = []
+    eventBranches.value   = []
+    eventGroups.value     = []
+    eventCategories.value = []
+    eventRegions.value    = [] // Tambahkan ini
+  }
+
+  return {
+    // state
+    eventStages,
+    eventBranches,
+    eventGroups,
+    eventCategories,
+    eventRegions, // Tambahkan ini
+    loading,
+
+    // actions
+    loadEventStages,
+    loadEventBranches,
+
+    loadAllEventGroups,
+    loadEventGroups,
+
+    loadAllEventCategories,
+    loadEventCategories,
+
+    loadEventRegions, // Tambahkan ini
+
+    preloadMasterMTQ,
+    clearMaster,
+  }
+})
