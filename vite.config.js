@@ -9,7 +9,6 @@ export default defineConfig({
                 'resources/css/app.css', 
                 'resources/js/app.js',
                 'resources/js/landing.js',  // landing page
-                'resources/js/venue.js',  // landing page
             ],
             refresh: true,
         }),

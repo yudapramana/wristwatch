@@ -57,6 +57,7 @@ use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\WhatsAppController;
 use App\Http\Controllers\Auth\PasswordResetWhatsappController;
 use App\Http\Controllers\API\V1\MandateController;
+use App\Http\Controllers\Api\HierarkiMtqController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +69,8 @@ use App\Http\Controllers\API\V1\MandateController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::get('/hierarki-mtq', [HierarkiMtqController::class, 'index']);
 
 Route::get('/venues', [EventVenueController::class, 'getVenues']);
 

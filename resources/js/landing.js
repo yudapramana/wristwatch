@@ -4,13 +4,15 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 // Import komponen utama dan halaman
 import App from './App.vue'
-import Guest from './pages/Guest.vue' // Sesuaikan path jika berbeda
-import Venue from './pages/Venue.vue' // Sesuaikan path jika berbeda
+import Index from './pages/guest/Index.vue' // Sesuaikan path jika berbeda
+import Venue from './pages/guest/Venue.vue' // Sesuaikan path jika berbeda
+import Branch from './pages/guest/CompetitionBranch.vue'
 
 // 1. Konfigurasi Vue Router
 const routes = [
-    { path: '/', component: Guest },
-    { path: '/venue', component: Venue }
+    { path: '/', component: Index },
+    { path: '/venue', component: Venue },
+    { path: '/branch', component: Branch }
 ]
 
 const router = createRouter({
