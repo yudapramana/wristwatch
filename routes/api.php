@@ -57,7 +57,7 @@ use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\WhatsAppController;
 use App\Http\Controllers\Auth\PasswordResetWhatsappController;
 use App\Http\Controllers\API\V1\MandateController;
-use App\Http\Controllers\Api\HierarkiMtqController;
+use App\Http\Controllers\API\HierarkiMtqController;
 
 /*
 |--------------------------------------------------------------------------
