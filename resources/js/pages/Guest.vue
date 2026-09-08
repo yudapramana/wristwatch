@@ -13,9 +13,11 @@
         <header class="w-full bg-transparent pt-6 pb-4 relative z-20 sticky top-0">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="bg-white/90 backdrop-blur-md rounded-full px-6 py-3 flex justify-between items-center border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    
+                    <!-- PERUBAHAN: Logo 42 Diganti dengan Gambar -->
                     <div class="flex items-center space-x-3">
-                        <div class="w-9 h-9 rounded-full overflow-hidden shadow-inner">
-                            <img :src="eventData.logo_event" alt="Logo MTQ" class="w-full h-full object-cover" />
+                        <div class="w-9 h-9 rounded-full overflow-hidden shadow-inner flex items-center justify-center border border-emerald-100 bg-white">
+                            <img src="https://res.cloudinary.com/dezj1x6xp/image/upload/v1763442267/PandanViewMandeh/uaccfb20uvhpvjyafdoj.png" alt="Logo MTQ" class="w-full h-full object-cover" />
                         </div>
                         <div class="flex flex-col">
                             <span class="font-bold text-sm tracking-wide text-slate-900 leading-tight">MTQ XLII PESSEL</span>
@@ -23,17 +25,19 @@
                         </div>
                     </div>
 
-                    <!-- Menu Navigasi dengan Anchor Links -->
+                    <!-- PERUBAHAN: Penambahan Menu Lokasi Lomba (Venue) -->
                     <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-500">
-                        <a href="#beranda" class="hover:text-emerald-700 transition-colors">Beranda</a>
-                        <a href="#tentang" class="hover:text-emerald-700 transition-colors">Tentang</a>
-                        <a href="#tahapan" class="hover:text-emerald-700 transition-colors">Tahapan</a>
-                        <a href="#informasi" class="hover:text-emerald-700 transition-colors">Informasi</a>
+                        <a href="/#beranda" class="hover:text-emerald-700 transition-colors">Beranda</a>
+                        <a href="/#tentang" class="hover:text-emerald-700 transition-colors">Tentang</a>
+                        <a href="/#tahapan" class="hover:text-emerald-700 transition-colors">Tahapan</a>
+                        <a href="/#informasi" class="hover:text-emerald-700 transition-colors">Informasi</a>
+                        <!-- Link ke halaman venue -->
+                        <router-link to="/venue" class="text-emerald-700 font-semibold hover:text-emerald-800 transition-colors">Lokasi Lomba</router-link>
                     </nav>
 
                     <div>
                         <a href="#" class="bg-emerald-800 hover:bg-emerald-700 text-white font-medium px-6 py-2.5 rounded-full text-sm transition-all duration-300 shadow-sm hover:shadow-emerald-900/20">
-                            Masuk Portal
+                            Kec. IV Jurai
                         </a>
                     </div>
                 </div>
@@ -262,9 +266,9 @@
                     <h3 class="text-3xl font-serif mb-3 leading-tight">Kelola kafilah dan dokumen secara efisien.</h3>
                     <p class="text-emerald-100 text-[15px] font-light">Akses sistem pendaftaran terpadu e-MTQ untuk mendaftarkan kontingen terbaik kecamatan Anda pada MTQ ke-42 di IV Jurai.</p>
                 </div>
-                <button class="bg-white text-emerald-900 px-9 py-4 rounded-2xl font-bold text-sm w-full md:w-auto hover:bg-slate-50 transition shrink-0 relative z-10 shadow-lg">
+                <a href="https://admin.mtqnpesisirselatan.com" target="_blank" rel="noopener noreferrer" class="inline-block text-center bg-white text-emerald-900 px-9 py-4 rounded-2xl font-bold text-sm w-full md:w-auto hover:bg-slate-50 transition shrink-0 relative z-10 shadow-lg">
                     Buka Dashboard Admin
-                </button>
+                </a>
             </section>
         </main>
 

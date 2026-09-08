@@ -6,6 +6,11 @@ export default [
     component: () => import('./pages/Public.vue'), // Gunakan Landing.vue atau buat file PublicDashboard.vue baru
   },
   {
+    path: '/venues', // Ini akan menjadi halaman utama publik saat web dibuka
+    name: 'public.venues',
+    component: () => import('./pages/Venue.vue'), // Gunakan Landing.vue atau buat file PublicDashboard.vue baru
+  },
+  {
     path: '/landing',
     name: 'app.landing',
     component: () => import('./pages/Landing.vue'),

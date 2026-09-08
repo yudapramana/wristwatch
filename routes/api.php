@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\MasterController;
-
+use App\Http\Controllers\API\EventVenueController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -68,6 +68,8 @@ use App\Http\Controllers\API\V1\MandateController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::get('/venues', [EventVenueController::class, 'getVenues']);
 
 Route::get('/guest/event-info', [GuestController::class, 'getGuestSnapshot']);
 
