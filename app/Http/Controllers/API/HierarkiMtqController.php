@@ -40,6 +40,7 @@ class HierarkiMtqController extends Controller
             // 1. Ambil semua data Branch, Group, Category (dengan relasi master data)
             $eventBranches = EventBranch::with('branch', 'event')
                 ->where('event_id', $event->id)
+                ->where('status', 'active')
                 ->get();
 
             $eventGroups = EventGroup::with('group')
