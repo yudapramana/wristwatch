@@ -152,32 +152,19 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import PublicLayout from '../../layouts/PublicLayout.vue' // Pastikan path ini sesuai dengan struktur direktori Anda
+import { storeToRefs } from 'pinia'
+import PublicLayout from '../../layouts/PublicLayout.vue'
+import { useEventStore } from '../../stores/EventStore.js'
+
+const store = useEventStore()
+const { eventData, venues } = storeToRefs(store)
 
 const isLoading = ref(true)
-const eventData = ref({})
-const venues = ref([])
 const searchQuery = ref('')
 
 // State Modal QR
 const isQrModalOpen = ref(false)
 const selectedVenueQr = ref({ qrUrl: '', title: '', mapsUrl: '' })
-
-// Fetch Data API
-const fetchVenues = async () => {
-    try {
-        const response = await fetch('/api/venues?event_id=1') // Sesuaikan routing endpoint API-nya
-        if (response.ok) {
-            const data = await response.json()
-            eventData.value = data.event
-            venues.value = data.venues
-        }
-    } catch (error) {
-        console.error('Gagal memuat data lokasi:', error)
-    } finally {
-        isLoading.value = false
-    }
-}
 
 // Computed property untuk filter pencarian
 const filteredVenues = computed(() => {
@@ -185,20 +172,15 @@ const filteredVenues = computed(() => {
     if (!query) return venues.value
 
     return venues.value.filter(venue => {
-        // Cek kecocokan di nama tempat lomba
         const matchTempat = venue.tempat_lomba?.toLowerCase().includes(query)
-        
-        // Cek kecocokan di dalam array cabang/majelis
         const matchCabang = venue.cabang.some(cabang => 
             cabang.bidang_lomba?.toLowerCase().includes(query) ||
             cabang.majelis?.toLowerCase().includes(query)
         )
-        
         return matchTempat || matchCabang
     })
 })
 
-// Fungsi buka tutup modal QR
 const openQrModal = (venue) => {
     selectedVenueQr.value = {
         qrUrl: venue.qr_code_url,
@@ -212,8 +194,9 @@ const closeQrModal = () => {
     isQrModalOpen.value = false
 }
 
-onMounted(() => {
-    fetchVenues()
+onMounted(async () => {
+    await store.fetchVenues()
+    isLoading.value = false
 })
 </script>
 

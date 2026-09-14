@@ -227,42 +227,20 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import PublicLayout from '../../layouts/PublicLayout.vue' // Sesuaikan path ini dengan letak file layout Anda
+import { storeToRefs } from 'pinia'
+import PublicLayout from '../../layouts/PublicLayout.vue'
+import { useEventStore } from '../../stores/EventStore.js'
 
-// State reaktif menampung payload dari snapshot 'guest'
-const eventData = ref({
-    app_name: 'Tingkat Kabupaten Pesisir Selatan',
-    event_name: 'MTQ XLII KABUPATEN PESISIR SELATAN',
-    event_year: '2026',
-    event_location: 'KECAMATAN IV JURAI',
-    event_tagline: 'Menuju MTQ yang Bermartabat',
-    start_date: '1 - 6 November 2026',
-    end_date: '2026-11-06',
-    logo_event: null,
-    logo_sponsor_1: null,
-    logo_sponsor_2: null,
-    logo_sponsor_3: null,
-})
+const store = useEventStore()
+// Extract state agar reaktif
+const { eventData } = storeToRefs(store) 
 
 const isLoading = ref(true)
 
-// Fungsi untuk mengambil data snapshot dari endpoint API Laravel
-const fetchGuestSnapshot = async () => {
-    try {
-        const response = await fetch('/api/guest/event-info')
-        if (response.ok) {
-            const data = await response.json()
-            eventData.value = { ...eventData.value, ...data }
-        }
-    } catch (error) {
-        console.error('Gagal mengambil data snapshot guest:', error)
-    } finally {
-        isLoading.value = false
-    }
-}
-
-onMounted(() => {
-    fetchGuestSnapshot()
+onMounted(async () => {
+    // Panggil action dari store
+    await store.fetchEventData() 
+    isLoading.value = false
 })
 </script>
 

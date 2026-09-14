@@ -111,28 +111,15 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import PublicLayout from '../../layouts/PublicLayout.vue' // Pastikan path ini sesuai dengan struktur direktori Anda
+import { storeToRefs } from 'pinia'
+import PublicLayout from '../../layouts/PublicLayout.vue'
+import { useEventStore } from '../../stores/EventStore.js'
+
+const store = useEventStore()
+const { eventData, branches } = storeToRefs(store)
 
 const isLoading = ref(true)
-const eventData = ref({})
-const branches = ref([])
 const searchQuery = ref('')
-
-// Fetch Data JSON dari API Endpoint Backend
-const fetchHierarki = async () => {
-    try {
-        const response = await fetch('/api/hierarki-mtq') // Sesuaikan endpoint API JSON Anda
-        if (response.ok) {
-            const data = await response.json()
-            eventData.value = data.event || {}
-            branches.value = data.branches || []
-        }
-    } catch (error) {
-        console.error('Gagal memuat data hierarki:', error)
-    } finally {
-        isLoading.value = false
-    }
-}
 
 // Computed property untuk filter pencarian real-time
 const filteredBranches = computed(() => {
@@ -167,7 +154,8 @@ const filteredBranches = computed(() => {
     }).filter(Boolean)
 })
 
-onMounted(() => {
-    fetchHierarki()
+onMounted(async () => {
+    await store.fetchBranches()
+    isLoading.value = false
 })
 </script>
