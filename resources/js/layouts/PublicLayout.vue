@@ -15,7 +15,7 @@
                     
                     <div class="flex items-center space-x-3">
                         <div class="w-9 h-9 rounded-full overflow-hidden shadow-inner flex items-center justify-center border border-emerald-100 bg-white">
-                            <img src="https://res.cloudinary.com/dezj1x6xp/image/upload/v1763442267/PandanViewMandeh/uaccfb20uvhpvjyafdoj.png" alt="Logo MTQ" class="w-full h-full object-cover" />
+                            <img src="https://res.cloudinary.com/dezj1x6xp/image/upload/v1763621790/PandanViewMandeh/qpiwf4a8dubcgok9nnzr.png" alt="Logo MTQ" class="w-full h-full object-cover" />
                         </div>
                         <div class="flex flex-col">
                             <span class="font-bold text-sm tracking-wide text-slate-900 leading-tight">MTQ XLII PESSEL</span>
