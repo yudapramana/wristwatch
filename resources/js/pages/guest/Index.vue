@@ -111,13 +111,13 @@
                         </div>
                         <span class="text-slate-300 group-hover:text-emerald-600">&rarr;</span>
                     </div>
-                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 w-full sm:w-64 flex justify-between items-center group cursor-pointer hover:border-emerald-300 hover:bg-emerald-50/30 transition-all duration-300">
+                    <router-link to="/klasemen" class="bg-slate-50 p-6 rounded-2xl border border-slate-100 w-full sm:w-64 flex justify-between items-center group cursor-pointer hover:border-emerald-300 hover:bg-emerald-50/30 transition-all duration-300">
                         <div>
                             <h4 class="font-bold text-slate-800 text-sm group-hover:text-emerald-800">Juara Umum</h4>
                             <p class="text-xs text-slate-500 mt-1">Klasemen kafilah kecamatan</p>
                         </div>
                         <span class="text-slate-300 group-hover:text-emerald-600">&rarr;</span>
-                    </div>
+                    </router-link>
                 </div>
             </section>
 

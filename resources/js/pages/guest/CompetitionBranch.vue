@@ -1,112 +1,68 @@
 <template>
-    <PublicLayout cta-text="Masuk Portal" :show-footer="false">
-        
-        <!-- MAIN KONTEN -->
-        <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8 relative z-10">
-            
-            <!-- HEADER SECTION -->
-            <section class="text-center space-y-4">
-                <span class="inline-block border border-emerald-200 bg-emerald-50/50 text-emerald-800 text-[11px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">
-                    Hierarki Musabaqah
-                </span>
-                <h1 class="text-3xl sm:text-4xl font-serif text-slate-900 leading-[1.15]">
-                    Cabang, Golongan & Kategori
-                </h1>
-                <p class="text-slate-500 text-sm font-light">
-                    {{ eventData.event_name || 'MTQ XLII Kabupaten Pesisir Selatan' }} TAHUN {{ eventData.event_year || '2026' }}
-                </p>
-            </section>
+  <PublicLayout>
+    <div class="pg">
+      <!-- Judul halaman + pencarian (logo & menu sudah ada di PublicLayout) -->
+      <header class="pg-top">
+        <div>
+          <p class="kicker">Hierarki musabaqah</p>
+          <h1>Cabang, Golongan &amp; Kategori</h1>
+          <p class="muted">
+            {{ eventData.event_name || 'MTQ XLII Kabupaten Pesisir Selatan' }} TAHUN {{ eventData.event_year || '2026' }}
+          </p>
+        </div>
 
-            <!-- SEARCH BAR -->
-            <section class="sticky top-[88px] z-20">
-                <div class="bg-white/80 backdrop-blur-md p-2 rounded-full border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center">
-                    <span class="pl-4 pr-2 text-slate-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                    </span>
-                    <input 
-                        v-model="searchQuery" 
-                        type="text" 
-                        placeholder="Cari cabang, golongan, atau kategori lomba..." 
-                        class="w-full bg-transparent border-none focus:ring-0 text-sm text-slate-700 py-3 px-2 outline-none placeholder-slate-400"
-                    />
-                    <button v-if="searchQuery" @click="searchQuery = ''" class="pr-4 text-slate-400 hover:text-slate-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
-                    </button>
-                </div>
-            </section>
+        <label class="search">
+          <span class="sr-only">Cari cabang, golongan, atau kategori</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Cari cabang, golongan, atau kategori lomba…"
+            autocomplete="off"
+          />
+          <button v-if="searchQuery" type="button" class="clear" aria-label="Hapus pencarian" @click="searchQuery = ''">×</button>
+        </label>
+      </header>
 
-            <!-- LOADING SKELETON -->
-            <div v-if="isLoading" class="space-y-6">
-                <div v-for="i in 3" :key="i" class="bg-white/80 rounded-3xl p-6 border border-slate-100 shadow-sm animate-pulse h-40"></div>
+      <p v-if="!isLoading" class="count-line muted" aria-live="polite">
+        {{ filteredBranches.length }} cabang<template v-if="searchQuery.trim()"> cocok dengan “{{ searchQuery.trim() }}”</template>
+      </p>
+
+      <!-- Skeleton -->
+      <div v-if="isLoading" class="list" aria-busy="true" aria-label="Memuat">
+        <div v-for="i in 3" :key="i" class="card skel-card"></div>
+      </div>
+
+      <!-- Daftar hierarki -->
+      <div v-else-if="filteredBranches.length" class="list">
+        <section v-for="(branch, index) in filteredBranches" :key="branch.id" class="card">
+          <!-- Cabang -->
+          <header class="card-head">
+            <span class="no">{{ index + 1 }}</span>
+            <h3>{{ branch.branch_name }}</h3>
+            <span class="count">{{ branch.groups.length }} Golongan</span>
+          </header>
+
+          <!-- Golongan & kategori -->
+          <div v-if="branch.groups.length > 0" class="groups">
+            <div v-for="group in branch.groups" :key="group.id" class="group">
+              <p class="g-kick">Golongan</p>
+              <h4>{{ group.group_name }}</h4>
+
+              <ul v-if="group.categories.length > 0" class="cats">
+                <li v-for="category in group.categories" :key="category.id">{{ category.category_name }}</li>
+              </ul>
+              <p v-else class="muted empty">Tidak ada kategori</p>
             </div>
+          </div>
+          <p v-else class="muted pad">Tidak ada golongan</p>
+        </section>
+      </div>
 
-            <!-- HIERARCHY LIST -->
-            <section v-else class="space-y-6">
-                <div 
-                    v-for="(branch, index) in filteredBranches" 
-                    :key="branch.id"
-                    class="bg-white/90 backdrop-blur-md rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.02)] p-6 transition-all duration-300 space-y-4"
-                >
-                    <!-- Cabang Header -->
-                    <div class="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
-                        <div class="flex items-start gap-3">
-                            <span class="bg-emerald-50 text-emerald-800 text-xs font-bold w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5">
-                                {{ index + 1 }}
-                            </span>
-                            <div>
-                                <h3 class="font-bold text-slate-800 text-base leading-snug">
-                                    {{ branch.branch_name }}
-                                </h3>
-                            </div>
-                        </div>
-                        <span class="bg-emerald-50 text-emerald-700 text-[11px] font-bold px-3 py-1 rounded-full shrink-0">
-                            {{ branch.groups.length }} Golongan
-                        </span>
-                    </div>
-
-                    <!-- Golongan & Kategori List -->
-                    <div v-if="branch.groups.length > 0" class="space-y-3 pl-2 sm:pl-4">
-                        <div 
-                            v-for="group in branch.groups" 
-                            :key="group.id"
-                            class="bg-slate-50/70 border border-slate-100 rounded-2xl p-4 space-y-3"
-                        >
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                                <h4 class="font-bold text-slate-800 text-sm">
-                                    🏷️ Golongan: {{ group.group_name }}
-                                </h4>
-                            </div>
-
-                            <!-- Kategori List -->
-                            <div v-if="group.categories.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-slate-200/50">
-                                <div 
-                                    v-for="category in group.categories" 
-                                    :key="category.id"
-                                    class="bg-white px-3.5 py-2 rounded-xl border border-slate-100 flex items-center justify-between shadow-xs"
-                                >
-                                    <span class="text-slate-700 text-xs font-medium">
-                                        • {{ category.category_name }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div v-else class="text-xs text-slate-400 italic pt-1">
-                                Tidak ada kategori
-                            </div>
-                        </div>
-                    </div>
-                    <div v-else class="text-center py-6 text-slate-400 text-xs italic">
-                        Tidak ada golongan
-                    </div>
-                </div>
-
-                <!-- Jika tidak ada hasil pencarian -->
-                <div v-if="filteredBranches.length === 0" class="text-center py-16 bg-white/50 backdrop-blur rounded-3xl border border-slate-100">
-                    <span class="text-4xl opacity-50 mb-4 block">🔍</span>
-                    <p class="text-slate-500 text-sm">Tidak menemukan cabang, golongan, atau kategori yang cocok.</p>
-                </div>
-            </section>
-        </main>
-    </PublicLayout>
+      <!-- Tidak ada hasil -->
+      <p v-else class="state">Tidak menemukan cabang, golongan, atau kategori yang cocok.</p>
+    </div>
+  </PublicLayout>
 </template>
 
 <script setup>
@@ -128,10 +84,10 @@ const filteredBranches = computed(() => {
 
     return branches.value.map(branch => {
         const matchBranch = branch.branch_name?.toLowerCase().includes(query)
-        
+
         const filteredGroups = branch.groups.map(group => {
             const matchGroup = group.group_name?.toLowerCase().includes(query)
-            const filteredCategories = group.categories.filter(cat => 
+            const filteredCategories = group.categories.filter(cat =>
                 cat.category_name?.toLowerCase().includes(query)
             )
 
@@ -155,7 +111,67 @@ const filteredBranches = computed(() => {
 })
 
 onMounted(async () => {
-    await store.fetchBranches()
-    isLoading.value = false
+    try {
+        await store.fetchBranches()
+    } finally {
+        isLoading.value = false
+    }
 })
 </script>
+
+<style scoped>
+/* ====== Dasar layout (sama dengan Results.vue) ====== */
+.pg {
+  --navy: #0b2f55; --blue: #0f5f8c; --ink: #0d2b4a; --muted: #6b7c93;
+  --line: #e6ecf3; --bg: #eef3f9; --gold: #f6c744;
+  max-width: 80rem; margin: 0 auto; padding: 8px 16px 24px; color: var(--ink);
+}
+@media (min-width: 640px) { .pg { padding-inline: 24px; } }
+@media (min-width: 1024px) { .pg { padding-inline: 32px; } }
+.kicker { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--navy); margin: 0 0 2px; }
+.muted { color: var(--muted); font-size: 13px; margin: 0; } .pad { padding: 12px 18px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.pg-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 8px 0 14px; flex-wrap: wrap; }
+.pg-top h1 { margin: 0; font-size: clamp(22px, 3vw, 30px); font-weight: 800; color: var(--navy); line-height: 1.15; }
+
+/* pencarian */
+.search { position: relative; display: flex; align-items: center; min-width: 320px; color: #6d86a3; }
+.search svg { position: absolute; left: 13px; pointer-events: none; }
+.search input { width: 100%; padding: 10px 36px 10px 38px; font: inherit; font-size: 14px; color: var(--ink); background: #f1f8fd; border: 1px solid #cfe0ee; border-radius: 12px; outline: none; }
+.search input::placeholder { color: #8aa0b8; }
+.search input:focus { background: #fff; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(15, 95, 140, .15); }
+.search input:focus-visible { outline: 3px solid #7cc3ea; outline-offset: 2px; }
+.clear { position: absolute; right: 8px; width: 24px; height: 24px; display: grid; place-items: center; font-size: 18px; line-height: 1; color: var(--muted); background: transparent; border: 0; border-radius: 50%; cursor: pointer; }
+.clear:hover { background: #e3edf6; }
+.count-line { margin: 0 0 10px; }
+
+/* ====== Kartu cabang ====== */
+.list { display: flex; flex-direction: column; gap: 12px; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; min-width: 0; }
+.card-head { display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--line); }
+.no { width: 30px; height: 30px; flex: none; display: grid; place-items: center; font-size: 12px; font-weight: 800; color: var(--navy); background: #eaf4fb; border-radius: 10px; }
+.card-head h3 { flex: 1; min-width: 0; margin: 0; font-size: 16px; font-weight: 700; color: var(--navy); }
+.count { background: var(--blue); color: #fff; font-size: 12px; font-weight: 600; padding: 3px 11px; border-radius: 999px; white-space: nowrap; }
+
+/* golongan & kategori */
+.groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; padding: 12px 14px 14px; }
+.group { padding: 10px 14px 12px; background: #f6f9fc; border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+.g-kick { margin: 0; font-size: 10.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #4b6481; }
+.group h4 { margin: 2px 0 8px; font-size: 14.5px; font-weight: 800; color: var(--navy); line-height: 1.25; }
+.cats { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.cats li { padding: 3px 10px; font-size: 12.5px; color: #3e5370; background: #fff; border: 1px solid var(--line); border-radius: 999px; }
+.empty { font-style: italic; }
+.state { margin: 4px 0 0; padding: 18px 22px; background: #fff; border: 1px dashed #c9d7e6; border-radius: 14px; color: var(--muted); }
+
+.skel-card { height: 130px; background: linear-gradient(90deg, #eef3f9 25%, #f8fafc 50%, #eef3f9 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite linear; }
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+/* ====== Mobile ====== */
+@media (max-width: 960px) {
+  .search { min-width: 100%; }
+}
+@media (max-width: 520px) {
+  .groups { grid-template-columns: minmax(0, 1fr); }
+  .card-head { flex-wrap: wrap; }
+}
+</style>

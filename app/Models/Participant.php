@@ -122,23 +122,26 @@ class Participant extends Model
             return $value;
         }
 
-        // Ambil HANYA nama filenya saja menggunakan basename()
-        // Contoh: 'documents//file.pdf' atau 'documents/uuid/file.pdf' akan menjadi 'file.pdf'
-        $filename = basename($value);
+        // Path relatif file di project ADMIN (route secure.docs.stream)
+        $path = !empty($this->uuid)
+            ? '/secure/documents/' . rawurlencode($this->uuid) . '/' . rawurlencode(basename($value))
+            : '/secure/documents/not-found';
 
-        // Selama participant memiliki UUID, kita rakit URL-nya dengan aman
-        if (!empty($this->uuid)) {
-            return route('secure.docs.stream', [
-                'uuid'     => $this->uuid,
-                'filename' => $filename
-            ]);
-        }
-
-        // Fallback terakhir jika anehnya UUID participant tidak ada
-        // Mengarahkan ke rute catch-all yang otomatis memicu respon "invalidFormat" / File tidak ditemukan
-        return url('/secure/documents/not-found');
+        return $this->adminBaseUrl() . $path;
     }
 
+    /**
+     * Base URL project admin, tempat file disimpan dan di-stream.
+     *  - Project admin : ADMIN_URL kosong -> pakai host project ini (APP_URL / request).
+     *  - Project public: isi ADMIN_URL di .env, mis. http://127.0.0.1:8001 (lokal)
+     *                    atau https://admin.domainanda.id (production).
+     */
+    protected function adminBaseUrl(): string
+    {
+        $base = config('app.admin_url');
+
+        return $base ? rtrim($base, '/') : rtrim(url('/'), '/');
+    }
 
     public function getPhotoUrlAttribute($value)
     {

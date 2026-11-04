@@ -58,6 +58,7 @@ use App\Http\Controllers\WhatsAppController;
 use App\Http\Controllers\Auth\PasswordResetWhatsappController;
 use App\Http\Controllers\API\V1\MandateController;
 use App\Http\Controllers\API\HierarkiMtqController;
+use App\Http\Controllers\API\V1\GuestResultController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +70,16 @@ use App\Http\Controllers\API\HierarkiMtqController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::prefix('v1/guest')->group(function () {
+    Route::get('results',               [GuestResultController::class, 'index']);
+    Route::post('results/unlock',               [GuestResultController::class, 'unlock']);
+    Route::get('results/{eventGroup}',  [GuestResultController::class, 'show'])->whereNumber('eventGroup');
+});
+
+Route::post('/v1/guest/access/unlock', [GuestController::class, 'unlockStandings'])->middleware('throttle:5,1');
+Route::post('/v1/guest/standings/unlock', [GuestController::class, 'unlockStandings'])->middleware('throttle:5,1');
+Route::get('/v1/guest/standings', [GuestController::class, 'getGuestStandings']);
 
 Route::get('/hierarki-mtq', [HierarkiMtqController::class, 'index']);
 

@@ -1,5 +1,5 @@
 <template>
-    <div :class="['relative min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-emerald-200 selection:text-emerald-900 overflow-hidden z-0', { 'pb-16': !showFooter }]">
+    <div :class="['relative min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-emerald-200 selection:text-emerald-900 overflow-x-clip z-0', { 'pb-16': !showFooter }]">
         
         <!-- Subtle Green Gradient & Pattern Background -->
         <div class="absolute inset-0 z-[-1] pointer-events-none fixed">
@@ -9,35 +9,65 @@
         </div>
 
         <!-- NAVBAR -->
-        <header class="w-full bg-transparent pt-6 pb-4 relative z-20 sticky top-0">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="bg-white/90 backdrop-blur-md rounded-full px-6 py-3 flex justify-between items-center border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-                    
-                    <div class="flex items-center space-x-3">
-                        <div class="w-9 h-9 rounded-full overflow-hidden shadow-inner flex items-center justify-center border border-emerald-100 bg-white">
+        <!-- Tambahkan transisi dan ubah class secara dinamis berdasarkan nilai isScrolled -->
+        <header 
+            class="w-full sticky top-0 z-50 transition-all duration-300 ease-in-out"
+            :class="isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-200 py-3 md:py-4' : 'bg-transparent pt-4 md:pt-6 pb-4'"
+        >
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <!-- Lepas border radius dan background saat navbar dalam posisi scrolled -->
+                <div 
+                    class="flex justify-between items-center gap-4 transition-all duration-300 ease-in-out"
+                    :class="isScrolled ? 'px-2' : 'bg-white/90 backdrop-blur-md rounded-full pl-4 pr-3 md:px-6 py-2.5 md:py-3 border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]'"
+                >
+
+                    <router-link to="/" class="flex items-center space-x-3 min-w-0" aria-label="MTQ XLII PESSEL - Beranda">
+                        <div class="w-9 h-9 rounded-full overflow-hidden shadow-inner flex items-center justify-center border border-emerald-100 bg-white flex-none">
                             <img src="https://res.cloudinary.com/dezj1x6xp/image/upload/v1763621790/PandanViewMandeh/qpiwf4a8dubcgok9nnzr.png" alt="Logo MTQ" class="w-full h-full object-cover" />
                         </div>
-                        <div class="flex flex-col">
-                            <span class="font-bold text-sm tracking-wide text-slate-900 leading-tight">MTQ XLII PESSEL</span>
-                            <span class="text-[10px] text-emerald-700 font-medium">IV Jurai 2026</span>
+                        <div class="flex flex-col min-w-0">
+                            <span class="font-bold text-sm tracking-wide text-slate-900 leading-tight truncate">MTQN XLII KABUPATEN PESISIR SELATAN</span>
+                            <span class="text-[10px] text-emerald-700 font-medium">KECAMATAN IV JURAI 2026</span>
                         </div>
-                    </div>
+                    </router-link>
 
-                    <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-500">
-                        <router-link to="/" class="hover:text-emerald-700 transition-colors" active-class="text-emerald-700 font-semibold">Beranda</router-link>
-                        <router-link to="/#tentang" class="hover:text-emerald-700 transition-colors">Tentang</router-link>
-                        <router-link to="/#tahapan" class="hover:text-emerald-700 transition-colors">Tahapan</router-link>
-                        <router-link to="/#informasi" class="hover:text-emerald-700 transition-colors">Informasi</router-link>
-                        <router-link to="/venue" class="hover:text-emerald-700 transition-colors" active-class="text-emerald-700 font-semibold border-b-2 border-emerald-600 pb-0.5">Venue</router-link>
-                        <router-link to="/branch" class="hover:text-emerald-700 transition-colors" active-class="text-emerald-700 font-semibold border-b-2 border-emerald-600 pb-0.5">Cabang</router-link>
+                    <!-- Menu desktop -->
+                    <nav class="hidden md:flex items-center gap-x-6 lg:gap-x-8 text-sm font-medium text-slate-500" aria-label="Navigasi utama">
+                        <router-link
+                            v-for="l in links" :key="l.to" :to="l.to"
+                            class="hover:text-emerald-700 transition-colors border-b-2 border-transparent pb-0.5"
+                            :active-class="l.page ? 'text-emerald-700 font-semibold !border-emerald-600' : ''"
+                            :exact-active-class="l.exact ? 'text-emerald-700 font-semibold' : ''"
+                        >{{ l.label }}</router-link>
                     </nav>
 
-                    <div>
-                        <a :href="ctaLink" class="bg-emerald-800 hover:bg-emerald-700 text-white font-medium px-6 py-2.5 rounded-full text-sm transition-all duration-300 shadow-sm hover:shadow-emerald-900/20">
-                            {{ ctaText }}
-                        </a>
-                    </div>
+                    <!-- Tombol menu mobile -->
+                    <button
+                        type="button"
+                        class="md:hidden w-10 h-10 rounded-full flex items-center justify-center text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                        :aria-expanded="menuOpen ? 'true' : 'false'"
+                        aria-controls="menu-mobile"
+                        aria-label="Buka menu"
+                        @click="menuOpen = !menuOpen"
+                    >
+                        <svg v-if="!menuOpen" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                        <svg v-else class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                    </button>
                 </div>
+
+                <!-- Panel menu mobile -->
+                <nav
+                    v-if="menuOpen" id="menu-mobile"
+                    class="md:hidden absolute left-4 right-4 sm:left-6 sm:right-6 mt-2 bg-white rounded-3xl border border-slate-100 shadow-[0_16px_40px_rgb(0,0,0,0.10)] p-2"
+                    aria-label="Navigasi utama"
+                >
+                    <router-link
+                        v-for="l in links" :key="l.to" :to="l.to"
+                        class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-600 hover:bg-emerald-50 hover:text-emerald-700"
+                        :active-class="l.page ? '!bg-emerald-50 !text-emerald-700 font-semibold' : ''"
+                        :exact-active-class="l.exact ? '!bg-emerald-50 !text-emerald-700 font-semibold' : ''"
+                    >{{ l.label }}</router-link>
+                </nav>
             </div>
         </header>
 
@@ -46,6 +76,7 @@
 
         <!-- FOOTER -->
         <footer v-if="showFooter" class="bg-white border-t border-slate-100 pt-16 pb-8 mt-12 relative z-20">
+            <!-- (Konten footer dibiarkan sama seperti aslinya) -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
                     <div class="md:col-span-1">
@@ -65,9 +96,11 @@
                     <div>
                         <h4 class="font-bold text-slate-800 text-xs tracking-widest uppercase mb-5">Navigasi Utama</h4>
                         <ul class="space-y-3 text-[13px] text-slate-500 font-light">
-                            <li><a href="#beranda" class="hover:text-emerald-700">Beranda Utama</a></li>
-                            <li><a href="#tahapan" class="hover:text-emerald-700">Tahapan & Linimasa</a></li>
-                            <li><a href="#tentang" class="hover:text-emerald-700">Tentang Kegiatan</a></li>
+                            <li><router-link to="/" class="hover:text-emerald-700">Beranda Utama</router-link></li>
+                            <li><router-link to="/#tahapan" class="hover:text-emerald-700">Tahapan & Linimasa</router-link></li>
+                            <li><router-link to="/#tentang" class="hover:text-emerald-700">Tentang Kegiatan</router-link></li>
+                            <li><router-link to="/hasil" class="hover:text-emerald-700">Hasil Cabang</router-link></li>
+                            <li><router-link to="/klasemen" class="hover:text-emerald-700">Klasemen Juara Umum</router-link></li>
                         </ul>
                     </div>
                     <div>
@@ -80,9 +113,15 @@
                     </div>
                 </div>
                 
-                <div class="border-t border-slate-100 pt-8 text-center md:flex md:justify-between text-[11px] text-slate-400 font-light tracking-wide">
-                    <p>&copy; 2026 Pemerintah Kabupaten Pesisir Selatan. Hak Cipta Dilindungi.</p>
-                    <p class="mt-2 md:mt-0">Sistem Pendaftaran Digital e-MTQ</p>
+                <div class="border-t border-slate-100 pt-8 text-center md:flex md:justify-between md:items-start md:gap-8 md:text-left text-[11px] text-slate-400 font-light tracking-wide">
+                    <p>
+                        &copy; 2026 Pemerintah Kabupaten Pesisir Selatan &amp; Kementerian Agama Kabupaten Pesisir Selatan.
+                        Hak Cipta Dilindungi.
+                    </p>
+                    <p class="mt-2 md:mt-0 md:text-right">
+                        Sistem Pendaftaran Digital e-MTQ <br class="hidden md:block" />
+                        Dikembangkan bersama Pranata Komputer - Pramana Yuda Sayeti
+                    </p>
                 </div>
             </div>
         </footer>
@@ -90,9 +129,43 @@
 </template>
 
 <script setup>
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
+
 defineProps({
-    ctaText: { type: String, default: 'Masuk Portal' },
-    ctaLink: { type: String, default: '#' },
     showFooter: { type: Boolean, default: true }
 })
+
+const links = [
+    { to: '/',          label: 'Beranda',  exact: true },
+    { to: '/#tentang',  label: 'Tentang' },
+    { to: '/#tahapan',  label: 'Tahapan' },
+    { to: '/#informasi', label: 'Informasi' },
+    { to: '/venue',     label: 'Venue',    page: true },
+    { to: '/branch',    label: 'Cabang',   page: true },
+    { to: '/hasil',     label: 'Hasil',    page: true },
+    { to: '/klasemen',  label: 'Klasemen', page: true },
+]
+
+const menuOpen = ref(false)
+const route = useRoute()
+
+// State untuk memantau apakah halaman sedang di-scroll
+const isScrolled = ref(false)
+
+const handleScroll = () => {
+    // Jika window di-scroll lebih dari 20px, set isScrolled menjadi true
+    isScrolled.value = window.scrollY > 20
+}
+
+// Tambahkan dan bersihkan event listener untuk scroll
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
+})
+
+watch(() => route.fullPath, () => { menuOpen.value = false })
 </script>

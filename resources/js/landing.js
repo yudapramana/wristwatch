@@ -7,12 +7,16 @@ import App from './App.vue'
 import Index from './pages/guest/Index.vue' // Sesuaikan path jika berbeda
 import Venue from './pages/guest/Venue.vue' // Sesuaikan path jika berbeda
 import Branch from './pages/guest/CompetitionBranch.vue'
+import Standings from './pages/guest/Standings.vue'
+import Results from './pages/guest/Results.vue' // Hasil per cabang (leaderboard)
 
 // 1. Konfigurasi Vue Router
 const routes = [
     { path: '/', component: Index },
     { path: '/venue', component: Venue },
-    { path: '/branch', component: Branch }
+    { path: '/branch', component: Branch },
+    { path: '/klasemen', component: Standings },
+    { path: '/hasil', component: Results }
 ]
 
 const router = createRouter({
