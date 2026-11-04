@@ -70,8 +70,8 @@ class GuestResultController extends Controller
         $eventGroups = EventGroup::query()
             ->where('event_id', $eventId)
             ->where('status', 'active')
-            ->orderByRaw('COALESCE(order_number, 999999)')
-            ->orderBy('id')
+            // ->orderByRaw('COALESCE(order_number, 999999)')
+            ->orderBy('code')
             ->get();
 
         $categoriesByGroup = $this->categoriesFor($eventId);

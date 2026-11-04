@@ -32,7 +32,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-4">
                         <div class="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-white shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
                             <span class="text-[10px] uppercase font-bold text-emerald-600/70 block mb-1">📅 PELAKSANAAN</span>
-                            <h4 class="font-bold text-slate-800 text-sm mb-1">1 - 6 November 2026</h4>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">18 - 22 November 2026</h4>
                             <p class="text-[13px] text-slate-500 leading-snug">Jadwal inti perlombaan MTQ.</p>
                         </div>
                         <div class="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-white shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
