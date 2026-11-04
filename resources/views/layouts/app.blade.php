@@ -22,17 +22,26 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="MTQN XLII Pesisir Selatan Tahun 2026">
     <meta property="og:description" content="Portal resmi e-MTQ MTQN XLII Kabupaten Pesisir Selatan Tahun 2026. Pantau jadwal, pendaftaran, hasil penilaian, dan klasemen perlombaan secara digital.">
-    <meta property="og:image" content="{{ asset('app_logo.png') }}">
-    <meta property="og:image:secure_url" content="{{ asset('app_logo.png') }}">
-    <meta property="og:image:type" content="image/png">
+    <meta property="og:image" content="{{ asset('og-image.jpg') }}">
+    <meta property="og:image:secure_url" content="{{ asset('og-image.jpg') }}">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Logo e-MTQ MTQN XLII Kabupaten Pesisir Selatan Tahun 2026">
 
     {{-- Twitter / X --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="MTQN XLII Pesisir Selatan Tahun 2026">
     <meta name="twitter:description" content="Portal resmi e-MTQ MTQN XLII Kabupaten Pesisir Selatan Tahun 2026. Jadwal, pendaftaran, hasil penilaian, dan klasemen perlombaan.">
-    <meta name="twitter:image" content="{{ asset('app_logo.png') }}">
+    <meta name="twitter:image" content="{{ asset('og-image.jpg') }}">
     <meta name="twitter:image:alt" content="Logo e-MTQ MTQN XLII Kabupaten Pesisir Selatan Tahun 2026">
+
+    {{-- Ikon --}}
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" type="image/png" href="{{ asset('app_logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+
+
 
     {{-- Tailwind via CDN, sama seperti file HTML awal --}}
     <script src="https://cdn.tailwindcss.com"></script>
@@ -40,8 +49,6 @@
     {{-- Vite entry khusus landing --}}
     @vite('resources/js/landing.js')
 
-    <link href="{{ asset('app_logo.png') }}" rel="icon">
-    <link rel="apple-touch-icon" href="{{ asset('app_logo.png') }}">
     {{-- <link rel="manifest" href="{{ asset('/manifest.json') }}"> --}}
 
     <style>
