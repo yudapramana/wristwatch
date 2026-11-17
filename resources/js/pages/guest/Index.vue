@@ -21,7 +21,7 @@
                     </div>
 
                     <div class="flex items-center space-x-4">
-                        <a href="https://drive.google.com/drive/folders/1ye6q9mBIJVYDbY0Orv8FaI0azxefVM_2?usp=sharing" class="bg-emerald-800 text-white px-7 py-3.5 rounded-xl font-medium text-sm hover:bg-emerald-700 transition-all duration-300 shadow-lg shadow-emerald-900/15 hover:shadow-emerald-900/25">
+                        <a target="_blank" href="https://drive.google.com/drive/folders/1ye6q9mBIJVYDbY0Orv8FaI0azxefVM_2?usp=sharing" class="bg-emerald-800 text-white px-7 py-3.5 rounded-xl font-medium text-sm hover:bg-emerald-700 transition-all duration-300 shadow-lg shadow-emerald-900/15 hover:shadow-emerald-900/25">
                             Buku Panduan Juknis
                         </a>
                         <a href="#tahapan" class="bg-white border border-emerald-100 text-slate-700 px-7 py-3.5 rounded-xl font-medium text-sm hover:bg-emerald-50 hover:border-emerald-200 transition-all duration-300 shadow-sm inline-block">
